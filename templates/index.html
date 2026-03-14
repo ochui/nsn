@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nigerian NSN Lookup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f5f7fa; color: #333; min-height: 100vh; }
+    .container { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+    h1 { text-align: center; margin-bottom: .5rem; font-size: 1.8rem; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 2rem; }
+    form { background: #fff; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.08); margin-bottom: 2rem; }
+    .form-row { display: flex; gap: .75rem; flex-wrap: wrap; }
+    select, input[type="text"] { padding: .6rem .8rem; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; }
+    select { flex: 0 0 180px; }
+    input[type="text"] { flex: 1; min-width: 200px; }
+    button { padding: .6rem 1.5rem; background: #0a8754; color: #fff; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; }
+    button:hover { background: #086b43; }
+    .error { background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; padding: .75rem 1rem; border-radius: 8px; margin-bottom: 1rem; }
+    .results-count { color: #666; margin-bottom: 1rem; }
+    .card { background: #fff; border-radius: 10px; padding: 1.25rem; margin-bottom: .75rem; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .card .operator { font-weight: 600; font-size: 1.1rem; margin-bottom: .5rem; }
+    .card .details { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .4rem; }
+    .card .details span { color: #555; font-size: .9rem; }
+    .card .details strong { color: #333; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📞 Nigerian NSN Lookup</h1>
+    <p class="subtitle">Search Nigeria's National Numbering Plan</p>
+
+    <form method="get" action="/">
+      <div class="form-row">
+        <select name="mode">
+          <option value="number" {% if mode == "number" %}selected{% endif %}>Phone Number</option>
+          <option value="area" {% if mode == "area" %}selected{% endif %}>Area / City</option>
+          <option value="operator" {% if mode == "operator" %}selected{% endif %}>Operator</option>
+        </select>
+        <input type="text" name="q" value="{{ q }}" placeholder="e.g. 08031234567, Lagos, MTN" required>
+        <button type="submit">Search</button>
+      </div>
+    </form>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if results %}
+    <p class="results-count">Found {{ results|length }} result{{ "s" if results|length != 1 }}</p>
+    {% for r in results %}
+    <div class="card">
+      <div class="operator">{{ r["Licensee"] }}</div>
+      <div class="details">
+        <span><strong>Area:</strong> {{ r["Numbering Area"] }}</span>
+        <span><strong>Area Code:</strong> {{ r["Area Code"] }}</span>
+        <span><strong>NSN Block:</strong> {{ r["National (Significant) Number (N(S)N)"] }}</span>
+        <span><strong>Total Numbers:</strong> {{ r["Total Numbers"] | int }}</span>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+</body>
+</html>
