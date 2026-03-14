@@ -1,3 +1,4 @@
+import os
 import re
 from pathlib import Path
 
@@ -5,6 +6,7 @@ import pandas as pd
 from fastapi import FastAPI, Request, Query
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+import uvicorn
 
 app = FastAPI(title="Nigerian NSN Lookup")
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
@@ -66,3 +68,9 @@ async def index(
         "index.html",
         {"request": request, "results": results, "error": error, "mode": mode, "q": q},
     )
+
+
+if __name__ == "__main__":
+    # Render expects apps to bind to 0.0.0.0 and use PORT from env.
+    port = int(os.getenv("PORT", "10000"))
+    uvicorn.run("nsn:app", host="0.0.0.0", port=port)
