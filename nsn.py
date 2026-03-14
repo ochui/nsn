@@ -1,6 +1,7 @@
 import os
 import re
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 from fastapi import FastAPI, Request, Query
@@ -22,21 +23,21 @@ def normalize_number(number: str) -> str:
     return number
 
 
-def search_by_number(number: str) -> list[dict]:
+def search_by_number(number: str) -> list[dict[Any, Any]]:
     nsn = normalize_number(number)
-    matched = df[df["National (Significant) Number (N(S)N)"].apply(
-        lambda x: isinstance(x, str) and nsn.startswith(x.replace("X", ""))
-    )]
+    blocks = df["National (Significant) Number (N(S)N)"].tolist()
+    mask = [isinstance(block, str) and nsn.startswith(block.replace("X", "")) for block in blocks]
+    matched = df[mask]
     return matched.to_dict(orient="records")
 
 
-def search_by_area(area: str) -> list[dict]:
+def search_by_area(area: str) -> list[dict[Any, Any]]:
     area = area.strip().lower()
     matched = df[df["Numbering Area"].str.lower().str.contains(re.escape(area))]
     return matched.to_dict(orient="records")
 
 
-def search_by_operator(operator: str) -> list[dict]:
+def search_by_operator(operator: str) -> list[dict[Any, Any]]:
     operator = operator.strip().lower()
     matched = df[df["Licensee"].str.lower().str.contains(re.escape(operator))]
     return matched.to_dict(orient="records")
@@ -48,7 +49,7 @@ async def index(
     mode: str = Query(default=""),
     q: str = Query(default=""),
 ):
-    results = []
+    results: list[dict[Any, Any]] = []
     error = ""
 
     if mode and q:
