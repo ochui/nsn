@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nigerian Telecom Licensee Search</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f5f7fa; color: #333; min-height: 100vh; }
+    .container { max-width: 960px; margin: 0 auto; padding: 2rem 1rem; }
+    h1 { text-align: center; margin-bottom: .5rem; font-size: 1.8rem; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 2rem; }
+    form { background: #fff; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.08); margin-bottom: 2rem; }
+    .form-row { display: flex; gap: .75rem; flex-wrap: wrap; }
+    input, select { padding: .6rem .8rem; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; }
+    input[type="text"] { flex: 1 1 260px; }
+    select { flex: 1 1 220px; }
+    input[type="date"] { flex: 0 1 160px; }
+    button { padding: .6rem 1.5rem; background: #0a8754; color: #fff; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; }
+    button:hover { background: #086b43; }
+    .error { background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; padding: .75rem 1rem; border-radius: 8px; margin-bottom: 1rem; }
+    .results-count { color: #666; margin-bottom: 1rem; }
+    .card { background: #fff; border-radius: 10px; padding: 1.25rem; margin-bottom: .75rem; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .card .company { font-weight: 600; font-size: 1.1rem; margin-bottom: .5rem; }
+    .card .details { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .4rem; }
+    .card .details span { color: #555; font-size: .9rem; }
+    .card .details strong { color: #333; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Nigerian Telecom Licensee Search</h1>
+    <p class="subtitle">Search individual licensees by company, address, category, and license period</p>
+
+    <form method="get" action="/licensees">
+      <div class="form-row">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search company, address, or category">
+
+        <select name="category">
+          <option value="">All categories</option>
+          {% for item in categories %}
+          <option value="{{ item }}" {% if item == category %}selected{% endif %}>{{ item }}</option>
+          {% endfor %}
+        </select>
+
+        <input type="date" name="start_date" value="{{ start_date }}">
+        <input type="date" name="end_date" value="{{ end_date }}">
+
+        <button type="submit">Search</button>
+      </div>
+    </form>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if q or category or start_date or end_date %}
+    <p class="results-count">Found {{ results|length }} result{{ "s" if results|length != 1 }}</p>
+    {% endif %}
+
+    {% for r in results %}
+    <div class="card">
+      <div class="company">{{ r["COMPANY NAME"] }}</div>
+      <div class="details">
+        <span><strong>Category:</strong> {{ r["CATEGORY"] }}</span>
+        <span><strong>Address:</strong> {{ r["ADDRESS"] }}</span>
+        <span><strong>Start Date:</strong> {{ r["START DATE"] }}</span>
+        <span><strong>Expiry Date:</strong> {{ r["EXPIRY DATE"] }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>
