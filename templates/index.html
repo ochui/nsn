@@ -12,8 +12,7 @@
     .subtitle { text-align: center; color: #666; margin-bottom: 2rem; }
     form { background: #fff; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.08); margin-bottom: 2rem; }
     .form-row { display: flex; gap: .75rem; flex-wrap: wrap; }
-    select, input[type="text"] { padding: .6rem .8rem; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; }
-    select { flex: 0 0 180px; }
+    input[type="text"] { padding: .6rem .8rem; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; }
     input[type="text"] { flex: 1; min-width: 200px; }
     button { padding: .6rem 1.5rem; background: #0a8754; color: #fff; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; }
     button:hover { background: #086b43; }
@@ -33,12 +32,7 @@
 
     <form method="get" action="/">
       <div class="form-row">
-        <select name="mode">
-          <option value="number" {% if mode == "number" %}selected{% endif %}>Phone Number</option>
-          <option value="area" {% if mode == "area" %}selected{% endif %}>Area / City</option>
-          <option value="operator" {% if mode == "operator" %}selected{% endif %}>Operator</option>
-        </select>
-        <input type="text" name="q" value="{{ q }}" placeholder="e.g. 08031234567, Lagos, MTN" required>
+        <input type="text" name="q" value="{{ q }}" placeholder="Search number, operator, city, area code, NDC, or NSN block" required>
         <button type="submit">Search</button>
       </div>
     </form>
