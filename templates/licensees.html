@@ -20,11 +20,17 @@
     button:hover { background: #086b43; }
     .error { background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; padding: .75rem 1rem; border-radius: 8px; margin-bottom: 1rem; }
     .results-count { color: #666; margin-bottom: 1rem; }
-    .card { background: #fff; border-radius: 10px; padding: 1.25rem; margin-bottom: .75rem; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
-    .card .company { font-weight: 600; font-size: 1.1rem; margin-bottom: .5rem; }
-    .card .details { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .4rem; }
-    .card .details span { color: #555; font-size: .9rem; }
-    .card .details strong { color: #333; }
+    .licensee-card { background: #fff; border: 2px solid #e5e7eb; border-left-width: 6px; border-radius: 10px; padding: 1rem; margin-bottom: .75rem; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .licensee-card.expired { border-color: #dc2626; }
+    .licensee-card.expiring-soon { border-color: #f59e0b; }
+    .licensee-card.active { border-color: #16a34a; }
+    .licensee-card.unknown { border-color: #9ca3af; }
+    .licensee-header { display: flex; justify-content: space-between; gap: 1rem; align-items: center; margin-bottom: .5rem; }
+    .licensee-header strong { font-size: 1.1rem; }
+    .status-badge { font-size: .8rem; font-weight: 600; padding: .25rem .5rem; border-radius: 999px; background: #f3f4f6; white-space: nowrap; }
+    .details { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .4rem; }
+    .details span { color: #555; font-size: .9rem; }
+    .details strong { color: #333; }
   </style>
 </head>
 <body>
@@ -59,8 +65,11 @@
     {% endif %}
 
     {% for r in results %}
-    <div class="card">
-      <div class="company">{{ r["COMPANY NAME"] }}</div>
+    <div class="licensee-card {{ r.status_class }}">
+      <div class="licensee-header">
+        <strong>{{ r["COMPANY NAME"] }}</strong>
+        <span class="status-badge">{{ r.status_label }}</span>
+      </div>
       <div class="details">
         <span><strong>Category:</strong> {{ r["CATEGORY"] }}</span>
         <span><strong>Address:</strong> {{ r["ADDRESS"] }}</span>

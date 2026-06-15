@@ -150,8 +150,29 @@ def licensee_text_score(query: str, row: pd.Series) -> tuple[int, float]:
     return 0, 0.0
 
 
+def get_license_status(expiry_date: Any) -> tuple[str, str]:
+    today = pd.Timestamp.today().normalize()
+
+    if pd.isna(expiry_date):
+        return "unknown", "Unknown"
+
+    expiry_date = pd.Timestamp(expiry_date).normalize()
+    if expiry_date < today:
+        return "expired", "Expired"
+
+    days_left = (expiry_date - today).days
+    if days_left <= 90:
+        return "expiring-soon", "Expiring soon"
+
+    return "active", "Active"
+
+
 def licensee_record(row: pd.Series) -> dict[str, str]:
-    return {column: search_value(row.get(column, "")) for column in LICENSEE_DISPLAY_COLUMNS}
+    record = {column: search_value(row.get(column, "")) for column in LICENSEE_DISPLAY_COLUMNS}
+    status_class, status_label = get_license_status(row.get("__expiry_date"))
+    record["status_class"] = status_class
+    record["status_label"] = status_label
+    return record
 
 
 def search_licensees(
